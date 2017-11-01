@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+     <head>
+      <title>后台管理系统</title>
+         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+         <link href="assets/css/dpl-min.css" rel="stylesheet" type="text/css" />
+         <link href="assets/css/bui-min.css" rel="stylesheet" type="text/css" />
+         <link href="assets/css/main-min.css" rel="stylesheet" type="text/css" />
+
+     </head>
+     <body onload="loginInfo()">
+      <div class="header">
+
+          <div class="dl-title" align="center">
+              <h1>后台监控管理系统</h1>
+           <!--<img src="/chinapost/Public/assets/img/top.png">-->
+          </div>
+
+        <div class="dl-log">欢迎您，<!--/*@thymesVar id="username" type="cn.mrpei.tweetadmin.bean.User"*/-->
+        <span class="dl-log-user" sec:authentication="name"></span><a href="" th:href="@{/logout}" title="退出系统" class="dl-log-quit">[退出]</a>
+        </div>
+      </div>
+       <div class="content">
+        <div class="dl-main-nav">
+          <div class="dl-inform"><div class="dl-inform-title"><s class="dl-inform-icon dl-up"></s></div></div>
+          <ul id="J_Nav"  class="nav-list ks-clear">
+                    <li class="nav-item dl-selected"><div class="nav-item-inner nav-home">系统管理</div></li>
+                    <li class="nav-item dl-selected"><div class="nav-item-inner nav-order">业务管理</div></li>
+                    <li class="nav-item dl-selected"><div class="nav-item-inner nav-order">数据分析</div></li>
+          </ul>
+        </div>
+        <ul id="J_NavContent" class="dl-tab-conten">
+
+        </ul>
+       </div>
+      <script type="text/javascript" src="assets/js/jquery-1.8.1.min.js"></script>
+      <script type="text/javascript" src="assets/js/bui-min.js"></script>
+      <script type="text/javascript" src="assets/js/common/main-min.js"></script>
+      <script type="text/javascript" src="assets/js/config-min.js"></script>
+      <script src="Js/artDialog/artDialog.js?skin=default"></script>
+      <script src="Js/artDialog/plugins/iframeTools.js"></script>
+      <script src="Js/artDialog/artDiaExt.js"></script>
+
+      <script>
+        BUI.use('common/main',function(){
+          var config = [
+              {id:'1',menu:[
+                    {text:'系统管理',
+                        items:[
+                            {id:'12',text:'角色管理',href:'role/getRoleList'},
+                            {id:'13',text:'用户管理',href:'user/getAllUser'},
+                            {id:'14',text:'系统运行状态',href:'Role/index.html'}
+                        ]
+                    }
+                  ]},
+
+              {id:'2',menu:[
+                  {text:'业务管理',
+                      items:[
+                          {id:'21',text:'客户端用户列表',href:'clientUser/getClientUserList'},
+                          {id:'22',text:'发帖内容列表',href:'tweet/getTweetList'},
+                          {id:'21',text:'评论列表',href:'comment/getCommentList'}
+                      ]
+                 }
+              ]},
+
+              {id:'3',menu:[{text:'数据分析',items:[
+                  {id:'31',text:'用户数据',href:'role/getRoleList'},
+                  {id:'32',text:'基础数据',href:'/user/getAllUser'},
+                  {id:'33',text:'用户私密数据',href:'Role/index.html'}]}]}
+              ];
+          new PageUtil.MainPage({
+            modulesConfig : config
+          });
+        });
+      </script>
+     </body>
+
+<script th:inline="javascript">
+    function loginInfo() {
+
+        /*<![CDATA[*/
+
+            var username = /*[[${userDto.username}]]*/ 'Sebastian';
+            var loginTime = /*[[${userDto.lastLoginTime}]]*/ 'Sebastian';
+
+        /*]]>*/
+
+        //右下角滑动通知功能
+        art.dialog.notice({
+            title: '欢迎您:'+ username,
+            width: 300,// 必须指定一个像素宽度值或者百分比，否则浏览器窗口改变可能导致artDialog收缩
+            content: '当前时间为：'+ loginTime + '<br/>' + '<b>欢迎使用后台管理系统！</b>',
+            icon: 'face-smile',
+            time: 10
+        });
+    }
+
+
+</script>
+</html>

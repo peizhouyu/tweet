@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <script type="text/javascript" src="../Js/jquery.js"></script>
+    <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="../Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../Js/ckform.js"></script>
+    <script type="text/javascript" src="../Js/common.js"></script>
+    <script src="../Js/artDialog/artDialog.js?skin=default"></script>
+    <script src="../Js/artDialog/plugins/iframeTools.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="alert" th:if="${clientUserDtoList.info} != null">
+    <a class="close" data-dismiss="alert">×</a>
+    <strong>
+        Warning
+    </strong> <span th:text="${clientUserDtoList.info}"></span>
+</div>
+
+<form class="form-inline definewidth m20" th:action="@{searchByName}" method="post">
+    用户名或真实姓名：
+    <input type="text" name="searchName" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;
+    <button type="submit" class="btn btn-primary">查询</button>&nbsp;&nbsp; <button type="submit" class="btn btn-success" id="addnew">新增用户</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th>用户ID</th>
+        <th>用户名</th>
+        <th>密码</th>
+        <th>真实姓名</th>
+        <th>用户头像</th>
+        <th>手机号</th>
+        <th>邮箱</th>
+        <th>地理位置</th>
+        <th>最后一次登录IP</th>
+        <th>会员状态</th>
+        <th>当前状态</th>
+        <th>注册时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+	     <!--/*@thymesVar id="clientUserDtoList" type=""*/-->
+	     <tr th:each="clientUser : ${clientUserDtoList.items}">
+             <!--/*@thymesVar id="clientUser" type=""*/-->
+             <!--/*@thymesVar id="id" type=""*/-->
+             <td th:text="${clientUser.id}"></td>
+             <td th:text="${clientUser.account}"></td>
+             <td th:text="${clientUser.password}"></td>
+             <td th:text="${clientUser.realName}"></td>
+             <td><img th:src="${clientUser.headImgUrl}" height="60px" width="60px" th:onclick="'javascript:showHeadImg(\'' + ${clientUser.headImgUrl} + '\');'"/></td>
+             <td th:text="${clientUser.phone}"></td>
+             <td th:text="${clientUser.email}"></td>
+             <td th:text="${clientUser.userLocation}" />
+             <td th:text="${clientUser.lastIp}"></td>
+             <td th:text="((${clientUser.isVip == 0 }) ? '会员' : '非会员')"></td>
+             <td th:text="((${clientUser.isDel == 0 }) ? '有效' : '无效')"></td>
+             <td th:text="${clientUser.createTime}"></td>
+             <td>
+                 <a href="" th:href="@{updateClientUser(clientUserId=${clientUser.id})}">编辑</a>
+                 <a href="javascript:void(0);" th:onclick="'javascript:deleteClientUser(\'' + ${clientUser.id} + '\');'">删除</a>
+             </td>
+        </tr>
+    </table>
+    <div class="inline pull-right page" th:with="startIndex=${clientUserDtoList.startIndex},totalPage=${clientUserDtoList.totalPage}">
+        <!--/*@thymesVar id="clientUserDtoList" type="cn.mrpei.tweetadmin.bean.client.ClientUser"*/-->
+        <span th:text="${clientUserDtoList.totalNum}"></span> 条记录 <span th:text="${clientUserDtoList.currentPage}"></span>/<span th:text="${clientUserDtoList.totalPage}"></span> 页
+        <span th:each="i : ${#numbers.sequence(1,totalPage)}">
+            <!--搜索和查看全部 的两种不同分页方式  1 表示 搜索 状态-->
+            <a th:text="${i}" th:if="${isSearch} == 0" href='#'th:href="@{getClientUserList(currentPage = ${i})}"></a>
+            <a th:text="${i}" th:if="${isSearch} == 1" href='#'th:href="@{searchByName(currentPage = ${i})}"></a>
+        </span>
+        <!--<a href='#' th:href="@{getClientList(currentPage = ${i})}">下一页</a>-->
+        <a href='#' th:if="${isSearch} == 0" th:href="@{getClientUserList(currentPage = ${clientUserDtoList.totalPage})}" >最后一页</a>
+        <a href='#' th:if="${isSearch} == 1" th:href="@{searchByName(currentPage = ${clientUserDtoList.totalPage})}" >最后一页</a>
+    </div>
+
+
+</body>
+</html>
+
+
+<script>
+    function showHeadImg(url) {
+        art.dialog({
+            padding: 0,
+            title: '详情',
+            content: '<img src="' + url + '" width="600" height="600" />',
+            lock: true
+        });
+    }
+
+    function deleteClientUser(id) {
+        art.dialog({
+            content: '此操作将从数据库彻底删除信息，请谨慎使用！',
+            ok: function () {
+                var content;
+                var icon;
+                $.get("/clientUser/deleteClientUser", { id:id },function (data) {
+                    if(data.errno == 200){
+                        icon = 'succeed';
+                        content = 'success';
+                    }else{
+                        icon = 'error';
+                        content = 'fail';
+                    }
+                    art.dialog({
+                        icon: icon,
+                        content: content
+                    });
+
+                    location.reload();
+                });
+                this.time(0.1);
+                return false;
+            },
+            cancelVal: '关闭',
+            cancel: true
+        });
+    }
+</script>

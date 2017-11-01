@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <script type="text/javascript" src="../Js/jquery.js"></script>
+    <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="../Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../Js/ckform.js"></script>
+    <script type="text/javascript" src="../Js/common.js"></script>
+    <script src="../Js/artDialog/artDialog.js?skin=default"></script>
+    <script src="../Js/artDialog/plugins/iframeTools.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+
+    <script>
+        art.dialog({
+            title: 'hello world!'
+        });
+    </script>
+</head>
+<body>
+
+<div class="alert" th:if="${tweetDetailsDtoList.info} != null">
+    <a class="close" data-dismiss="alert">×</a>
+    <strong>
+        Warning
+    </strong> <span th:text="${tweetDetailsDtoList.info}"></span>
+</div>
+
+<form class="form-inline definewidth m20" th:action="@{searchByCondition}" method="post">
+    内容标题或info信息：
+    <input type="text" name="searchCondition" id="rolename"class="abc input-default" placeholder="" value="">&nbsp;&nbsp;
+    <button type="submit" class="btn btn-success">查询</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th>内容ID</th>
+        <th>标题</th>
+        <th>信息</th>
+        <th>具体内容</th>
+        <th>封面图片</th>
+        <th>评论数</th>
+        <th>点赞数</th>
+        <th>发布时间</th>
+        <th>是否删除</th>
+        <th>审查状态</th>
+        <th>对应用户</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+	     <!--/*@thymesVar id="clientUserDtoList" type=""*/-->
+	     <tr th:each="tweet : ${tweetDetailsDtoList.items}">
+             <!--/*@thymesVar id="clientUser" type=""*/-->
+             <!--/*@thymesVar id="id" type=""*/-->
+             <td th:text="${tweet.id}"></td>
+             <td th:text="${tweet.title}" th:onclick="'javascript:showContent(\'' + ${tweet.id} + '\',\''+${tweet.title}+'\');'"></td>
+             <td th:text="${tweet.info}"></td>
+             <td th:text="${tweet.content}"></td>
+             <!--<td th:text="${tweet.imgSrc}"></td>-->
+             <td><img th:src="${tweet.imgSrc}" height="40px" width="60px" th:onclick="'javascript:showImg(\'' + ${tweet.imgSrc} + '\');'"/></td>
+             <td th:text="${tweet.remarkNum}"></td>
+             <td th:text="${tweet.starNum}" />
+             <td th:text="${tweet.createTime}"></td>
+             <td th:text="((${tweet.isDel == 0 }) ? '有效' : '已删除')"></td>
+             <td th:text="((${tweet.isDisable == 0 }) ? '通过' : '违规')"></td>
+             <td th:text="${tweet.userAccount}" th:onclick="'javascript:showUserInfo(\'' + ${tweet.userId} + '\',\''+${tweet.userAccount}+'\');'"></td>
+             <td>
+                 <a href="javascript:void(0);" th:onclick="'javascript:statusEdit(\'' + ${tweet.id} + '\');'">编辑</a>
+                 <!--<button class="btn btn-success" th:onclick="'javascript:statusEdit(\'' + ${tweet.id} + '\');'">编辑</button>-->
+                 <a href="javascript:void(0);" th:onclick="'javascript:deleteTweet(\'' + ${tweet.id} + '\');'">删除</a>
+             </td>
+        </tr>
+    </table>
+    <div class="inline pull-right page" th:with="startIndex=${tweetDetailsDtoList.startIndex},totalPage=${tweetDetailsDtoList.totalPage}">
+        <!--/*@thymesVar id="clientUserDtoList" type="cn.mrpei.tweetadmin.bean.client.ClientUser"*/-->
+        <span th:text="${tweetDetailsDtoList.totalNum}"></span> 条记录 <span th:text="${tweetDetailsDtoList.currentPage}"></span>/<span th:text="${tweetDetailsDtoList.totalPage}"></span> 页
+        <span th:each="i : ${#numbers.sequence(1,totalPage)}">
+            <!--搜索和查看全部 的两种不同分页方式  1 表示 搜索 状态-->
+            <a th:text="${i}" th:if="${isSearch} == 0" href='#'th:href="@{getTweetList(currentPage = ${i})}"></a>
+            <a th:text="${i}" th:if="${isSearch} == 1" href='#'th:href="@{searchByCondition(currentPage = ${i})}"></a>
+        </span>
+        <!--<a href='#' th:href="@{getClientList(currentPage = ${i})}">下一页</a>-->
+        <a href='#' th:if="${isSearch} == 0" th:href="@{getTweetList(currentPage = ${tweetDetailsDtoList.totalPage})}" >最后一页</a>
+        <a href='#' th:if="${isSearch} == 1" th:href="@{searchByCondition(currentPage = ${tweetDetailsDtoList.totalPage})}" >最后一页</a>
+    </div>
+
+
+</body>
+<script>
+    function showImg(url) {
+        art.dialog({
+            padding: 0,
+            title: '详情',
+            content: '<img src="' + url + '" width="379" height="500" />',
+            lock: true
+        });
+
+    }
+
+    function showContent(id,title){
+        art.dialog.open("/tweet/getOneTweet?id=" + id,
+            {title: title, width: 800, height: 600});
+    }
+
+    function showUserInfo(id,title) {
+        art.dialog.open("/clientUser/getClientUserById?userId=" + id,
+            {title: title, width: 800, height: 500});
+    }
+
+    function statusEdit(id) {
+        art.dialog.open("/tweet/updateTweetStatus?id=" + id,
+            {title: '编辑', width: 800, height: 500});
+    }
+
+    function deleteTweet(id) {
+        art.dialog({
+            content: '此操作将从数据库彻底删除信息，请谨慎使用！',
+
+            ok: function () {
+                var content;
+                var icon;
+                $.get("/tweet/deleteTweet", { id:id },function (data) {
+                    if(data.errno == 200){
+                        icon = 'succeed';
+                        content = 'success';
+                    }else{
+                        icon = 'error';
+                        content = 'fail';
+                    }
+                    art.dialog({
+                        icon: icon,
+                        content: content
+                    });
+
+                    location.reload();
+                });
+                this.time(0.1);
+                return false;
+            },
+            cancelVal: '关闭',
+            cancel: true
+        });
+    }
+</script>
+</html>

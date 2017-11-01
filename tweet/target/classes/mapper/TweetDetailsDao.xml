@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mrpei.dao.TweetDetailsDao">
+
+    <resultMap id="TweetDetailsResultMaps" type="tweetDetails">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="info" property="info" />
+        <result column="content" property="content"/>
+        <result column="img_src" property="imgSrc" />
+        <result column="remark_num" property="remarkNum" />
+        <result column="star_num" property="starNum" />
+        <result column="time" property="time" />
+        <result column="is_del" property="isDel" />
+        <result column="is_disabled" property="isDisabled" />
+        <result column="ip" property="ip" />
+        <result column="location" property="location" />
+    </resultMap>
+
+
+    <select id="selectByPage" resultType="cn.mrpei.bean.TweetDetails">
+        select id, title, info, content, img_src, remark_num, star_num, time, is_del, ip, user_location
+        from tweet_details
+        <where>
+            is_del = 0 and is_disabled = 0
+        </where>
+    </select>
+    
+    <select id="selectById" resultType="cn.mrpei.bean.TweetDetails">
+        select id, title, info, content, img_src, remark_num, star_num, time, is_del, ip, user_location
+        from tweet_details
+        <where>
+            id = #{_parameter}
+        </where>
+    </select>
+
+    <insert id="insertByOne">
+        insert into tweet_details (title, info, content, img_src, remark_num, star_num, create_time, is_del, ip, user_location, user_account, user_id)
+        values (#{title}, #{info}, #{content}, #{imgSrc}, #{remarkNum}, #{starNum}, #{createTime}, #{isDel}, #{ip}, #{userLocation}, #{userAccount}, #{userId})
+    </insert>
+
+    <delete id="deleteByOne">
+        delete * from tweet_details
+        <where>
+            id = #{id}
+        </where>
+    </delete>
+
+</mapper>

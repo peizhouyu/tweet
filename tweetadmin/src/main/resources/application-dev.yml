@@ -1,0 +1,51 @@
+server:
+  session-timeout : 3600
+  port: 8080
+
+#多数据源配置
+  #管理系统数据库
+spring.datasource:
+    sys:
+      url: jdbc:mysql://localhost:3306/tweet_sys?useUnicode=true&characterEncoding=utf-8&useSSL=false
+      username: root
+      password: root
+      driver-class-name:  com.mysql.jdbc.Driver
+
+  #客户端后台数据库
+custom.datasource:
+      client:
+        url: jdbc:mysql://localhost:3306/tweet?useUnicode=true&characterEncoding=utf-8&useSSL=false
+        username: root
+        password: root
+        driver-class-name:  com.mysql.jdbc.Driver
+
+
+
+
+  #thymeleaf模板引擎
+spring:
+  thymeleaf:
+    mode: LEGACYHTML5
+    cache: false
+    encoding: UTF-8
+
+
+  http:
+    encoding:
+      charset: UTF-8
+    converters:
+      preferred-json-mapper: jackson
+    multipart:
+      max-file-size: 10MB
+
+  application:
+    name: tweetadmin
+
+  #mybatis配置
+mybatis:
+  config-location: classpath:config/mybatis-conf.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.mrpei.tweetadmin.bean
+
+
+

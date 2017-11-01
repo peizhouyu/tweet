@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../Css/style.css" />
+    <script type="text/javascript" src="../Js/jquery.js"></script>
+    <script type="text/javascript" src="../Js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="../Js/bootstrap.js"></script>
+    <script type="text/javascript" src="../Js/ckform.js"></script>
+    <script type="text/javascript" src="../Js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+<table class="table table-bordered table-hover definewidth m10">
+    <tr>
+        <td width="10%" class="tableleft">用户ID</td>
+        <td><span th:text="${clientUser.id}"></span></td>
+    </tr>
+    <tr>
+        <td class="tableleft">账号</td>
+        <td><span th:text="${clientUser.account}"></span></td>
+    </tr>
+    <tr>
+        <td class="tableleft">真实姓名</td>
+        <td><span th:text="${clientUser.realName}"></span></td>
+    </tr>
+    <tr>
+        <td class="tableleft">头像</td>
+        <td><img th:src="${clientUser.headImgUrl}" height="60px" width="60px" /></td>
+    </tr>
+    <tr>
+        <td class="tableleft">手机号</td>
+        <td><span th:text="${clientUser.phone}"></span></td>
+    </tr>
+    <tr>
+        <td class="tableleft">邮箱</td>
+        <td><span th:text="${clientUser.email}"></span></td>
+    </tr>
+    <tr>
+        <td class="tableleft">所在地</td>
+        <td><span th:text="${clientUser.userLocation}"></span></td>
+    </tr>
+    <tr>
+        <td class="tableleft">上次登录IP</td>
+        <td><span th:text="${clientUser.lastIp}"></span></td>
+    </tr>
+    <tr>
+        <td class="tableleft">账号状态</td>
+        <td th:text="((${clientUser.isDel == 0 }) ? '有效' : '无效')"></td>
+    </tr>
+    <tr>
+        <td class="tableleft">会员状态</td>
+        <td th:text="((${clientUser.isVip == 0 }) ? '会员' : '非会员')"></td>
+    </tr>
+    <tr>
+        <td class="tableleft">注册时间</td>
+        <td><span th:text="${clientUser.createTime}"></span></td>
+    </tr>
+
+</table>
+
+</body>
+</html>

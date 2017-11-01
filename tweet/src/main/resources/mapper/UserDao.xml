@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mrpei.dao.UserDao">
+    <select id="selectUserByPhone" resultType="cn.mrpei.bean.User">
+        select * from user
+        <where>
+            <if test="phone != null and phone != ''">
+                phone = #{phone}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectUserByName" resultType="cn.mrpei.bean.User">
+        select * from user
+        <where>
+            account = #{account}
+        </where>
+    </select>
+
+    <select id="selectUser" resultType="cn.mrpei.bean.User">
+        select * from user
+        <where>
+            account = #{account} and password = #{password}
+        </where>
+    </select>
+
+    <insert id="insertUser">
+        insert into user(account, password, head_img_url, phone, email, real_name, ip, user_location, last_ip, is_del, is_vip, create_time)
+        values(#{account}, #{password}, #{headImgUrl}, #{phone}, #{email}, #{realName}, #{ip}, #{userLocation}, #{lastIp}, #{isDel}, #{isVip}, #{createTime})
+    </insert>
+
+    <update id="updateUserHeadImg">
+        update user set head_img_url = #{headImgUrl} where account = #{account}
+    </update>
+
+    <select id="selectUserIdByAccount" resultType="Long">
+        select id from user
+        <where>
+            account = #{account}
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mrpei.tweetadmin.dao.client.TweetDao">
+
+    <resultMap id="tweetMap" type="cn.mrpei.tweetadmin.bean.client.TweetDetails">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="info" column="info" />
+        <result property="content" column="content" />
+        <result property="imgSrc" column="img_src" />
+        <result property="remarkNum" column="remark_num" />
+        <result property="starNum" column="star_num" />
+        <result property="createTime" column="create_time" />
+        <result property="isDel" column="is_del" />
+        <result property="isDisable" column="is_disable" />
+        <result property="ip" column="ip" />
+        <result property="userLocation" column="user_location" />
+        <result property="userAccount" column="user_account" />
+        <result property="userId" column="user_id" />
+    </resultMap>
+
+    <select id="countTweet" resultType="int">
+        select count(*) from tweet_details
+    </select>
+
+    <select id="selectAllTweet" resultMap="tweetMap">
+        select * from tweet_details
+    </select>
+
+    <select id="selectOneTweetById" resultMap="tweetMap">
+        select * from tweet_details
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="selectTweetBySearch" parameterType="String" resultMap="tweetMap">
+        select * from tweet_details
+        <if test="_parameter != null and _parameter != ''">
+            <where>
+                title LIKE CONCAT('%', #{condition}, '%') OR info LIKE CONCAT('%', #{contidion}, '%')
+                OR content LIKE CONCAT('%', #{condition}, '%')
+            </where>
+        </if>
+    </select>
+
+    <select id="countTweetBySearch" parameterType="String" resultType="int">
+        select count(*) from tweet_details
+        <if test="_parameter != null and _parameter != '' ">
+            <where>
+                title LIKE CONCAT('%', #{condition}, '%') OR info LIKE CONCAT('%', #{contidion}, '%')
+                OR content LIKE CONCAT('%', #{condition}, '%')
+            </where>
+        </if>
+    </select>
+
+    <delete id="deleteTweetById">
+        delete from tweet_details
+        <where>
+            id = #{id}
+        </where>
+    </delete>
+
+    <update id="updateTweetStatusById">
+        update tweet_details set is_del = #{isDel}, is_disable = #{isDisable}
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+</mapper>

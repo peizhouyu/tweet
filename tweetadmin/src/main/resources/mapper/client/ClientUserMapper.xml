@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mrpei.tweetadmin.dao.client.ClientUserDao">
+    <resultMap id="clientUser" type="cn.mrpei.tweetadmin.bean.client.ClientUser">
+        <id property="id" column="id" />
+        <result property="account" column="account" />
+        <result property="password" column="password" />
+        <result property="headImgUrl" column="head_img_url" />
+        <result property="phone" column="phone" />
+        <result property="email" column="email" />
+        <result property="realName" column="real_name" />
+        <result property="ip" column="ip" />
+        <result property="userLocation" column="user_location" />
+        <result property="lastIp" column="last_ip" />
+        <result property="isDel" column="is_del" />
+        <result property="isVip" column="is_vip" />
+        <result property="createTime" column="create_time" />
+
+    </resultMap>
+
+    <select id="selectAllClientUser" resultMap="clientUser">
+        select * from user
+    </select>
+
+    <select id="countClientUser" resultType="int">
+        select count(*) from user
+    </select>
+
+    <select id="selectClientUserById" resultMap="clientUser">
+        select * from user
+        <where>
+             id = #{id}
+        </where>
+    </select>
+
+    <update id="updateClientUser">
+        update user set account = #{account}, password = #{password}, phone = #{phone}, email = #{email}, real_name = #{realName}, user_location = #{userLocation},
+        is_del = #{isDel}, is_vip = #{isVip}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteClientUserById">
+        delete from user
+        <where>
+            id = #{id}
+        </where>
+    </delete>
+
+    <select id="selectClientUserBySearch" resultMap="clientUser">
+        select * from user
+        <where>
+            account LIKE CONCAT('%', #{name}, '%') OR real_name LIKE CONCAT('%', #{name}, '%')
+        </where>
+    </select>
+
+    <select id="countClientUserBySearch" parameterType="String" resultType="int">
+        select count(*) from user
+        <if test="_parameter != null and _parameter != '' ">
+            <where>
+                account LIKE CONCAT('%', #{name}, '%') OR real_name LIKE CONCAT('%', #{name}, '%')
+            </where>
+        </if>
+    </select>
+
+
+</mapper>
